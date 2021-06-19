@@ -1,0 +1,103 @@
+.validationError {
+	position: relative;
+	top: 3px;
+	color: #DC143C;
+}
+
+.hidden {
+	display: none;
+}
+
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
+.tooltip {
+	background-image: url('data:image/png;base64,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');
+	background-size: 20px;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    background-repeat: no-repeat;
+    bottom: 7px;
+    right: 0px;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: red;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+
+  opacity: 1 !important;
+
+}
+
+.delete {
+	margin-left: 5%;
+}
