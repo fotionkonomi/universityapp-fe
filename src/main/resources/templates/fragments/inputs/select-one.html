@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="select (internationalizedMessage, type, parentObject, object, options)" class="form-group row">
+	<label class="col-sm-3 col-form-label"
+		th:text="#{__${internationalizedMessage}__}">${internationalizedMessage}</label>
+	<div class="col-sm-10">
+	
+		<select th:id="${object}" th:placeholder="#{select.field.null}"
+ th:object="${__${parentObject}__}" th:field="*{__${object}__}" class="form-control mdb-select md-form">
+			<option id="firstOptionElement" value=""></option>
+			<option th:each="i : ${__${options}__}"
+				th:text="${i.name}" th:value="${i.id}"></option>
+		</select>
+		
+		<span class="validationError" th:if="${#fields.hasErrors('*{__${object}__}')}"
+ 			th:errors="*{__${object}__}">${type} Error</span>
+	</div>
+</div>
+
+</html>

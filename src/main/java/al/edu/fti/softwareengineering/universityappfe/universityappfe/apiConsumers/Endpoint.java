@@ -19,4 +19,22 @@ public class Endpoint {
 
     @Value("${endpoint.user.register}")
     private String signup;
+
+    @Value("${endpoint.course.available}")
+    private String availableCourses;
+
+    @Value("${endpoint.course.enrolled}")
+    private String enrolledCourses;
+
+    @Value("${endpoint.course.enroll}")
+    private String enrollInACourse;
+
+    @Value("${endpoint.course.drop}")
+    private String dropACourse;
+
+    @Value("${endpoint.course.friendCourses}")
+    private String coursesOfAFriend;
+
+    @Value("${endpoint.user.studentsEnrolled.course}")
+    private String studentsOfACourse;
 }

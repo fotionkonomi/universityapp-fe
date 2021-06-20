@@ -25,5 +25,6 @@ public class Course extends CommentableAndLikeable {
 
     private int repeatCount;
 
-    private CourseRepeatType courseRepeatType;
+    private CourseRepeatType repeatType;
+
 }

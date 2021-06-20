@@ -1,5 +1,6 @@
 package al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.impl;
 
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.Endpoint;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.BaseService;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.RestCaller;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.common.BaseModel;
@@ -12,6 +13,9 @@ public abstract class BaseServiceImpl<MODEL extends BaseModel, ID> implements Ba
     @Autowired
     protected RestCaller restCaller;
 
+    @Autowired
+    protected Endpoint endpoint;
+
     private Class<MODEL> classOfModel;
     private Class<MODEL[]> classOfArrayModel;
 
@@ -21,17 +25,17 @@ public abstract class BaseServiceImpl<MODEL extends BaseModel, ID> implements Ba
     }
 
     @Override
-    public ResponseEntity<MODEL> findById(String url, ID id) {
-        return restCaller.getExchange(url + "/" + id, classOfModel);
+    public ResponseEntity<MODEL> findById(ID id) {
+        return restCaller.getExchange("/" + classOfModel.getSimpleName().toLowerCase() + "/" + id, classOfModel);
     }
 
     @Override
-    public ResponseEntity<Void> add(String url, MODEL model) {
-        return restCaller.postExchange(url, new HttpEntity<>(model), Void.class);
+    public ResponseEntity<Void> add(MODEL model) {
+        return restCaller.postExchange("/" + classOfModel.getSimpleName().toLowerCase(), new HttpEntity<>(model), Void.class);
     }
 
     @Override
-    public ResponseEntity<MODEL[]> findAllPageable(String url, int pageNumber) {
-        return restCaller.getExchange(url + "/" + pageNumber, classOfArrayModel);
+    public ResponseEntity<MODEL[]> findAllPageable(int pageNumber) {
+        return restCaller.getExchange("/" + classOfModel.getSimpleName().toLowerCase() + "/" + pageNumber, classOfArrayModel);
     }
 }

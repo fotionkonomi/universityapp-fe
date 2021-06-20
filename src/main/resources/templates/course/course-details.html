@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/common/head.html :: headerfiles">
+</head>
+<body>
+<style>
+    /* Set the size of the div element that contains the map */
+    #map {
+        height: 400px;
+        /* The height is 400 pixels */
+        width: 100%;
+        /* The width is the width of the web page */
+    }
+</style>
+
+<div id="wrapper">
+    <ul th:replace="/fragments/common/sidebar.html :: sidebar"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragments/common/topbar.html :: topbar"></nav>
+            <input type="hidden" id="latitude" th:value="${course.hall.latitude}"></input>
+            <input type="hidden" id="longitude" th:value="${course.hall.longitude}"></input>
+
+            <center>
+                <h2 th:text="#{course.general.info}"></h2>
+                <div>
+                    <p><span th:text="#{course.name}"></span>:&nbsp;<span th:text="${course.name}"></span></p>
+                    <p><span th:text="#{course.description}"></span>:&nbsp;<span th:text="${course.description}"></span></p>
+                    <p><span th:text="#{course.startDateTime}"></span>:&nbsp;<span th:text="${course.startDateTime}"></span></p>
+                    <p><span th:text="#{course.repeatCount}"></span>:&nbsp;<span th:text="${course.repeatCount}"></span></p>
+                    <p><span th:text="#{course.courseRepeatType}"></span>:&nbsp;<span th:text="${course.repeatType}"></span></p>
+                </div>
+            <!--The div element for the map -->
+            <hr>
+            <h2 th:text="#{course.hall}"></h2>
+            <div id="map"></div>
+            <a th:text="#{course.hall.direction}" th:href="'https://www.google.com/maps?saddr=My+Location&daddr=' + ${course.hall.latitude} + ',' + ${course.hall.longitude}"></a>
+
+                <hr>
+            <div>
+                <h2 th:text="#{course.students.enrolled}">Enrolled Students</h2>
+                <table id="studentsEnrolled" border="1" style="width: 70%;">
+                    <tr>
+                        <th th:text="#{user.firstName}">User first name</th>
+                        <th th:text="#{user.lastName}">User last name</th>
+                        <th th:text="#{user.email}">User email</th>
+                        <th th:text="#{user.profilePicture}">User profile picture</th>
+                    </tr>
+                    <tr th:each="student : ${students}" th:value="${student}" >
+                        <td th:text="${student.firstName}">User first name</td>
+                        <td th:text="${student.lastName}">User first name</td>
+                        <td th:text="${student.email}">User first name</td>
+                        <td width="15%"><img width="100%" th:src="${student.profilePicturePath}"></td>
+
+                    </tr>
+
+                </table>
+            </div>
+
+            </center>
+
+        </div>
+    </div>
+</div>
+
+<div th:insert="/fragments/common/footer.html :: footer"></div>
+
+<div th:insert="/fragments/common/scripts.html :: scripts"></div>
+
+</body>
+
+<script>
+    // Initialize and add the map
+    function initMap() {
+        const lat = parseFloat (document.getElementById("latitude").value);
+        const long = parseFloat (document.getElementById("longitude").value);
+
+        console.log("Lat: " + lat);
+        console.log("Long " + long);
+
+        const location = { lat: lat, lng: long };
+
+        console.log(location)
+        // The map, centered at Uluru
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 16,
+            center: location,
+        });
+        // The marker, positioned at Uluru
+        const marker = new google.maps.Marker({
+            position: location,
+            map: map,
+        });
+    }
+</script>
+
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrqSM518ciNfSJGOsLiAuE55mVqJQ41Wg&callback=initMap&libraries=&v=weekly"
+        async
+></script>
+
+</html>

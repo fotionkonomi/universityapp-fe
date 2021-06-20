@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface BaseService<MODEL extends BaseModel, ID> {
-    ResponseEntity<MODEL> findById(String url, ID id);
+    ResponseEntity<MODEL> findById(ID id);
 
-    ResponseEntity<Void> add(String url, MODEL model);
+    ResponseEntity<Void> add(MODEL model);
 
-    ResponseEntity<MODEL[]> findAllPageable(String url, int pageNumber);
+    ResponseEntity<MODEL[]> findAllPageable(int pageNumber);
 }

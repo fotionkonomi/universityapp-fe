@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="text (internationalizedMessage, type, object)" class="form-group row">
+	<label th:for="${#strings.toLowerCase(type).concat('name')}" class="col-sm-3 col-form-label"
+		th:text="#{__${internationalizedMessage}__}">${type}</label>
+	<div class="col-sm-10">
+		<input type="text" class="form-control" th:id="${#strings.toLowerCase(type).concat('name')}"
+			th:field="*{__${object}__}" th:placeholder="#{__${internationalizedMessage}__}" />
+		
+		<span class="validationError" th:if="${#fields.hasErrors('*{__${object}__}')}"
+ 			th:errors="*{__${object}__}">${type} Error</span>
+	</div>
+</div>
+
+</html>

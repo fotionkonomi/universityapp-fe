@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/common/head.html :: headerfiles">
+</head>
+<body>
+
+<div id="wrapper">
+    <ul th:replace="/fragments/common/sidebar.html :: sidebar"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragments/common/topbar.html :: topbar"></nav>
+
+            <table id="courses" border="1" style="width: 99%;">
+                <tr>
+                    <th th:text="#{course.name}">Course Name</th>
+                    <th th:text="#{course.description}">Course Description</th>
+                    <th th:text="#{course.hall}">Hall</th>
+                    <th th:text="#{course.startDateTime}">Date the course starts</th>
+                    <th th:text="#{course.repeatCount}">Number of lectures</th>
+                    <th th:text="#{course.courseRepeatType}">Frequency of lectures</th>
+                    <th  th:text="#{course.drop}">Drop</th>
+                    <th  th:text="#{global.details}">Details</th>
+                </tr>
+                <tr th:each="course : ${courses}" th:value="${course}" >
+                    <td th:text="${course.name}"></td>
+                    <td th:text="${course.description}">Course Description</td>
+                    <td th:text="${course.hall.name}">Course Hall</td>
+                    <td th:text="${course.startDateTime}">Course start date and time</td>
+                    <td th:text="${course.repeatCount}">Course number of lectures</td>
+                    <td th:text="${course.repeatType.name()}">Course frequency</td>
+                    <td><a style="color: white;" class="drop-button btn btn-primary" th:id="${course.id}" th:text="#{course.drop}">DROP</a></td>
+                    <td><a th:href="@{'/course/' + ${course.id}}" style="color: white;" class="btn btn-secondary" th:text="#{global.details}">Details</a></td>
+                </tr>
+
+            </table>
+            <a th:if="${previousPage}" th:href="@{'/course/available/' + ${previousPage}}" th:text="#{page.previous}"></a>
+            <a style="float: right; margin-right: 1%;" th:if="${nextPage}" th:href="@{'/course/available/' + ${nextPage}}" th:text="#{page.next}"></a>
+        </div>
+    </div>
+</div>
+
+<div th:insert="/fragments/common/footer.html :: footer"></div>
+
+<div th:insert="/fragments/common/scripts.html :: scripts"></div>
+
+</body>
+
+<script>
+    $(document).ready(function () {
+        $('select.mdb-select').selectize({
+            sortField: 'text'
+        });
+
+        $("#courses").on("click", ".drop-button", function (e) {
+            e.preventDefault();
+            var button = $(this);
+            let isConfirm = confirm("Are you sure?");
+            if (isConfirm) {
+
+                $.ajax({
+                    url: "/ajax/course/drop/" + button.attr("id"),
+                    method: "DELETE",
+                    success: function () {
+                        $(button).closest('tr').css('background', 'red');
+
+                        $(button).closest('tr').fadeOut(1000, function () {
+                            $(this).remove();
+                        });
+                    },
+                    error: function (errormessage) {
+                        console.log(errormessage);
+                    }
+                });
+            }
+
+
+        });
+
+    });
+
+</script>
+
+</html>

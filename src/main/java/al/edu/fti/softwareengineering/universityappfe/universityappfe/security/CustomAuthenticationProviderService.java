@@ -14,10 +14,13 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestOperations;
+
+import java.util.ArrayList;
 
 @Service
 @Primary
@@ -47,7 +50,7 @@ public class CustomAuthenticationProviderService implements AuthenticationProvid
                 User user = userResponse.getBody();
                 user.setToken(jwt);
                 authenticationToken = new UsernamePasswordAuthenticationToken(
-                        user, password);
+                        user, password, new ArrayList<>());
             }
         } else {
             throw new UsernameNotFoundException("Email " + email + " not found");

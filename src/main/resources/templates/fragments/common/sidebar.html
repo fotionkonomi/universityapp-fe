@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Sidebar -->
+<body>
+<ul th:fragment="sidebar"
+    class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+    id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+
+
+    <!-- Divider -->
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item"><a class="nav-link collapsed" href="#"
+                            data-toggle="collapse" data-target="#collapsePages"
+                            aria-expanded="true" aria-controls="collapsePages"> <i
+            class="fas fa-fw fa-folder"></i> <span th:text="#{sidebar.pages}">Pages</span>
+    </a>
+        <div id="collapsePages" class="collapse"
+             aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="/course/available/1" th:text="#{sidebar.available.courses}">Available Courses</a>
+                <a class="collapse-item" href="/course/enrolled/1" th:text="#{sidebar.enrolled.courses}">Enrolled Courses</a>
+                <div class="collapse-divider"></div>
+            </div>
+        </div>
+    </li>
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
+
+</body>
+</html>
+<!-- End of Sidebar -->
