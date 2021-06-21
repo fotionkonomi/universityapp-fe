@@ -1,22 +1,27 @@
 package al.edu.fti.softwareengineering.universityappfe.universityappfe.controller;
 
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.CommentService;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.CourseService;
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.LikeService;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.UserService;
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.ContentWrapper;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.User;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.commentableAndLikeable.Course;
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.userInteractions.Comment;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.validation.Valid;
+import java.util.*;
 
 @Controller
-@RequestMapping("/course")
+@RequestMapping("/course/details")
+@Slf4j
 public class CourseController {
 
     @Autowired
@@ -25,45 +30,83 @@ public class CourseController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/available/{pageNumber}")
-    public String availableCourses(Model model, @PathVariable("pageNumber") int pageNumber) {
-        ResponseEntity<Course[]> courses = service.getAllAvailableCourses(pageNumber);
-        List<Course> courseList = Arrays.asList(courses.getBody());
-        model.addAttribute("courses", courseList);
-        if(pageNumber > 1) {
-            model.addAttribute("previousPage", pageNumber - 1);
-        }
-        if(courseList.size() == 10) {
-            model.addAttribute("nextPage", pageNumber + 1);
-        }
+    @Autowired
+    private CommentService commentService;
 
-        return "course/available-courses";
+    @Autowired
+    private LikeService likeService;
+
+    @ModelAttribute("course")
+    public Course course(@PathVariable("idCourse") Long idCourse) {
+        ResponseEntity<Course> courseResponseEntity = service.findById(idCourse);
+        return courseResponseEntity.getBody();
+    }
+
+    @ModelAttribute("students")
+    public List<User> students(@PathVariable("idCourse") Long idCourse) {
+        ResponseEntity<User[]> userResponseEntity = userService.getUsersEnrolledInACourse(idCourse);
+        return Arrays.asList(userResponseEntity.getBody());
+    }
+
+    @ModelAttribute("idCourse")
+    public Long idCourse(@PathVariable("idCourse") Long idCourse) {
+        return idCourse;
+    }
+
+    @ModelAttribute("comments")
+    public List<Comment> comments(@PathVariable("idCourse") Long idCourse) {
+        ResponseEntity<Comment[]> commentsResponseEntity = commentService.getAllCommentsInAContent(idCourse);
+        return Arrays.asList(commentsResponseEntity.getBody());
+    }
+
+    @ModelAttribute("commentToAdd")
+    public ContentWrapper commentToAdd() {
+        return new ContentWrapper();
     }
 
     @GetMapping("/{idCourse}")
     public String courseDetails(Model model, @PathVariable("idCourse") Long idCourse) {
-        ResponseEntity<Course> courseResponseEntity = service.findById(idCourse);
-        ResponseEntity<User[]> userResponseEntity = userService.getUsersEnrolledInACourse(idCourse);
-
-        Course course = courseResponseEntity.getBody();
-        model.addAttribute("course", course);
-        model.addAttribute("students", userResponseEntity.getBody());
-
+        this.addToModelIfCommentsAreAlreadyLiked(model, idCourse);
         return "course/course-details";
     }
 
-    @GetMapping("/enrolled/{pageNumber}")
-    public String enrolledCourses(Model model, @PathVariable("pageNumber") int pageNumber) {
-        ResponseEntity<Course[]> courses = service.getAllEnrolledCourses(pageNumber);
-        List<Course> courseList = Arrays.asList(courses.getBody());
-        model.addAttribute("courses", courseList);
-        if(pageNumber > 1) {
-            model.addAttribute("previousPage", pageNumber - 1);
-        }
-        if(courseList.size() == 10) {
-            model.addAttribute("nextPage", pageNumber + 1);
+    @PostMapping("/{idCourse}")
+    public String submitNewComment(Model model, @PathVariable("idCourse") Long idCourse, @ModelAttribute("commentToAdd") @Valid ContentWrapper commentToAdd, Errors errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().forEach(error -> log.error(error.getDefaultMessage()));
+            this.addToModelIfCommentsAreAlreadyLiked(model, idCourse);
+            return "course/course-details";
         }
 
-        return "course/enrolled-courses";
+        this.commentService.addCommentInAContent(idCourse, commentToAdd);
+
+        return "redirect:/course/details/" + idCourse;
     }
+
+    @PostMapping("/{idCourse}/comment/{idComment}/unlike")
+    public String unlikeComment(@PathVariable("idCourse") Long courseId, @PathVariable("idComment") Long commentId) {
+        return this.toggleLikeAComment(courseId, commentId);
+    }
+
+    @PostMapping("/{idCourse}/comment/{idComment}/like")
+    public String likeComment(@PathVariable("idCourse") Long courseId, @PathVariable("idComment") Long commentId) {
+        return this.toggleLikeAComment(courseId, commentId);
+    }
+
+    private void addToModelIfCommentsAreAlreadyLiked(Model model, Long idCourse) {
+        List<Comment> comments = comments(idCourse);
+        Map<String, Boolean> areLikedComments = new HashMap<>();
+        Map<String, Integer> numberOfLikesInComments = new HashMap<>();
+        comments.forEach(comment -> areLikedComments.put(comment.getId().toString() , this.commentService.findIfACommentIsAlreadyLiked(comment.getId()).getBody()));
+        comments.forEach(comment -> numberOfLikesInComments.put(comment.getId().toString(), this.likeService.getLikesOfAComment(comment.getId()).getBody().length));
+        model.addAttribute("areLikedComments", areLikedComments);
+        model.addAttribute("numberOfLikesInComments", numberOfLikesInComments);
+    }
+
+    private String toggleLikeAComment(Long courseId, Long commentId) {
+        this.likeService.toggleLikeAComment(commentId);
+        return "redirect:/course/details/" + courseId;
+    }
+
+
 }

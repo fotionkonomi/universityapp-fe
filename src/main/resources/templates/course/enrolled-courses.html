@@ -21,7 +21,7 @@
                     <th  th:text="#{course.drop}">Drop</th>
                     <th  th:text="#{global.details}">Details</th>
                 </tr>
-                <tr th:each="course : ${courses}" th:value="${course}" >
+                <tr th:each="course : ${coursesEnrolled}" th:value="${course}" >
                     <td th:text="${course.name}"></td>
                     <td th:text="${course.description}">Course Description</td>
                     <td th:text="${course.hall.name}">Course Hall</td>
@@ -29,7 +29,7 @@
                     <td th:text="${course.repeatCount}">Course number of lectures</td>
                     <td th:text="${course.repeatType.name()}">Course frequency</td>
                     <td><a style="color: white;" class="drop-button btn btn-primary" th:id="${course.id}" th:text="#{course.drop}">DROP</a></td>
-                    <td><a th:href="@{'/course/' + ${course.id}}" style="color: white;" class="btn btn-secondary" th:text="#{global.details}">Details</a></td>
+                    <td><a th:href="@{'/course/details/' + ${course.id}}" style="color: white;" class="btn btn-secondary" th:text="#{global.details}">Details</a></td>
                 </tr>
 
             </table>

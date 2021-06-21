@@ -37,4 +37,16 @@ public class Endpoint {
 
     @Value("${endpoint.user.studentsEnrolled.course}")
     private String studentsOfACourse;
+
+    @Value("${endpoint.content.comment}")
+    private String commentsOfAContent;
+
+    @Value("${endpoint.like.comment}")
+    private String likeAComment;
+
+    @Value("${endpoint.like.content}")
+    private String likeAContent;
+
+    @Value("${endpoint.comment.alreadyLiked}")
+    private String findIfACommentIsAlreadyLiked;
 }
