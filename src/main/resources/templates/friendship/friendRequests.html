@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/common/head.html :: headerfiles">
+</head>
+<body>
+
+<div id="wrapper">
+    <ul th:replace="/fragments/common/sidebar.html :: sidebar"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragments/common/topbar.html :: topbar"></nav>
+
+            <table id="friendRequests" border="1" style="width: 99%;">
+                <tr>
+                    <th th:text="#{friendship.requestedBy}">Requested By</th>
+                    <th th:text="#{friendship.requestedAt}">Requested At</th>
+                    <th th:text="#{friendship.accept}">Accept</th>
+                    <th th:text="#{friendship.decline}">Decline</th>
+                </tr>
+                <tr th:each="friendship : ${friendRequests}" th:value="${friendship}" >
+                    <td th:text="${friendship.requestedBy.firstName} + ' ' + ${friendship.requestedBy.lastName}"></td>
+                    <td th:text="${friendship.createdAt}">Course Description</td>
+                    <td><a style="color: white;" class="accept-button btn btn-primary" th:id="${friendship.requestedBy.id}" th:text="#{friendship.accept}">Accept</a></td>
+                    <td><a style="color: white;" class="decline-button btn btn-danger" th:id="${friendship.requestedBy.id}" th:text="#{friendship.decline}">Decline</a></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:insert="/fragments/common/footer.html :: footer"></div>
+
+<div th:insert="/fragments/common/scripts.html :: scripts"></div>
+
+</body>
+
+<script>
+    $(document).ready(function () {
+
+        $("#friendRequests").on("click", ".accept-button", function (e) {
+            e.preventDefault();
+            var button = $(this);
+            let isConfirm = confirm("Are you sure?");
+            if (isConfirm) {
+
+                $.ajax({
+                    url: "/ajax/friendship/acceptFriendRequest/" + button.attr("id"),
+                    method: "PUT",
+                    success: function () {
+                        $(button).closest('tr').css('background', 'green');
+
+                        $(button).closest('tr').fadeOut(1000, function () {
+                            $(this).remove();
+                        });
+                    },
+                    error: function (errormessage) {
+                        console.log(errormessage);
+                    }
+                });
+            }
+
+
+        });
+
+        $("#friendRequests").on("click", ".decline-button", function (e) {
+            e.preventDefault();
+            var button = $(this);
+            let isConfirm = confirm("Are you sure?");
+            if (isConfirm) {
+
+                $.ajax({
+                    url: "/ajax/friendship/declineFriendRequest/" + button.attr("id"),
+                    method: "DELETE",
+                    success: function () {
+                        $(button).closest('tr').css('background', 'red');
+
+                        $(button).closest('tr').fadeOut(1000, function () {
+                            $(this).remove();
+                        });
+                    },
+                    error: function (errormessage) {
+                        console.log(errormessage);
+                    }
+                });
+            }
+
+
+        });
+
+    });
+
+</script>
+
+</html>

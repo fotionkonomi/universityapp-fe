@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/common/head.html :: headerfiles">
+</head>
+<body>
+
+<div id="wrapper">
+    <ul th:replace="/fragments/common/sidebar.html :: sidebar"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragments/common/topbar.html :: topbar"></nav>
+
+            <table id="notifications" border="1" style="width: 99%;">
+                <tr>
+                    <th th:text="#{notification.content}">Content</th>
+                    <th th:text="#{notification.createdAt}">Course Description</th>
+                </tr>
+                <tr th:each="notification : ${notifications}" th:value="${notification}" >
+                    <td th:text="${notification.content}"></td>
+                    <td th:text="${notification.createdAt}">Created at</td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:insert="/fragments/common/footer.html :: footer"></div>
+
+<div th:insert="/fragments/common/scripts.html :: scripts"></div>
+
+</body>
+
+<script>
+    $(document).ready(function () {
+        $('select.mdb-select').selectize({
+            sortField: 'text'
+        });
+
+        $("#courses").on("click", ".enroll-button", function (e) {
+            e.preventDefault();
+            var button = $(this);
+            let isConfirm = confirm("Are you sure?");
+            if (isConfirm) {
+
+                $.ajax({
+                    url: "/ajax/course/enroll/" + button.attr("id"),
+                    method: "PUT",
+                    success: function () {
+                        $(button).closest('tr').css('background', 'green');
+
+                        $(button).closest('tr').fadeOut(1000, function () {
+                            $(this).remove();
+                        });
+                    },
+                    error: function (errormessage) {
+                        console.log(errormessage);
+                    }
+                });
+            }
+
+
+        });
+
+    });
+
+</script>
+
+</html>

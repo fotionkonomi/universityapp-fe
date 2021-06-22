@@ -49,4 +49,25 @@ public class Endpoint {
 
     @Value("${endpoint.comment.alreadyLiked}")
     private String findIfACommentIsAlreadyLiked;
+
+    @Value("${endpoint.friendship.exists}")
+    private String doesFriendshipExist;
+
+    @Value("${endpoint.friendship.friendRequest}")
+    private String sendFriendRequest;
+
+    @Value("${endpoint.notification.loggedUser}")
+    private String notificationsOfCurrentUser;
+
+    @Value("${endpoint.notification.see}")
+    private String seeNotification;
+
+    @Value("${endpoint.friendship.accept}")
+    private String acceptFriendRequest;
+
+    @Value("${endpoint.friendship.decline}")
+    private String declineFriendRequest;
+
+    @Value("${endpoint.friendship.friendRequests.loggedUser}")
+    private String friendRequestsOfLoggedUser;
 }

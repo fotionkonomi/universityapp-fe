@@ -1,10 +1,8 @@
 package al.edu.fti.softwareengineering.universityappfe.universityappfe.controller;
 
-import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.CommentService;
-import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.CourseService;
-import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.LikeService;
-import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.UserService;
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.*;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.ContentWrapper;
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.Friendship;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.User;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.commentableAndLikeable.Course;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.userInteractions.Comment;
@@ -35,6 +33,9 @@ public class CourseController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private FriendshipService friendshipService;
 
     @ModelAttribute("course")
     public Course course(@PathVariable("idCourse") Long idCourse) {
@@ -93,14 +94,36 @@ public class CourseController {
         return this.toggleLikeAComment(courseId, commentId);
     }
 
+    @PostMapping("/{idCourse}/sendFriendRequest/{idRequestedTo}")
+    public String sendFriendRequest(@PathVariable("idCourse") Long idCourse, @PathVariable("idRequestedTo") Long idRequestedTo) {
+        this.friendshipService.sendFriendRequest(idRequestedTo);
+        return "redirect:/course/details/" + idCourse;
+    }
+
     private void addToModelIfCommentsAreAlreadyLiked(Model model, Long idCourse) {
         List<Comment> comments = comments(idCourse);
+        List<User> students = students(idCourse);
         Map<String, Boolean> areLikedComments = new HashMap<>();
         Map<String, Integer> numberOfLikesInComments = new HashMap<>();
+        Map<String, Boolean> isStudentAFriend = new HashMap<>();
         comments.forEach(comment -> areLikedComments.put(comment.getId().toString() , this.commentService.findIfACommentIsAlreadyLiked(comment.getId()).getBody()));
         comments.forEach(comment -> numberOfLikesInComments.put(comment.getId().toString(), this.likeService.getLikesOfAComment(comment.getId()).getBody().length));
+        students.forEach(student -> {
+            Friendship friendship = this.friendshipService.findIfFriendshipExists(student.getId()).getBody();
+            Boolean valueToPutInModel = false;
+            if(friendship != null) {
+                if(friendship.getActive()) {
+                    valueToPutInModel = true;
+                } else {
+                    valueToPutInModel = null;
+                }
+            }
+            isStudentAFriend.put(student.getId().toString(), valueToPutInModel );
+        });
+
         model.addAttribute("areLikedComments", areLikedComments);
         model.addAttribute("numberOfLikesInComments", numberOfLikesInComments);
+        model.addAttribute("isStudentAFriend", isStudentAFriend);
     }
 
     private String toggleLikeAComment(Long courseId, Long commentId) {

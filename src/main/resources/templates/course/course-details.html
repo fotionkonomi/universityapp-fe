@@ -41,17 +41,27 @@
                 <h2 th:text="#{course.students.enrolled}">Enrolled Students</h2>
                 <table id="studentsEnrolled" border="1" style="width: 70%;">
                     <tr>
+                        <th th:text="#{user.profilePicture}">User profile picture</th>
                         <th th:text="#{user.firstName}">User first name</th>
                         <th th:text="#{user.lastName}">User last name</th>
                         <th th:text="#{user.email}">User email</th>
-                        <th th:text="#{user.profilePicture}">User profile picture</th>
+                        <th th:text="#{user.friendRequest}">Send Friend Request</th>
                     </tr>
                     <tr th:each="student : ${students}" th:value="${student}" >
+                        <td width="5%"><img width="100%" th:src="${student.profilePicturePath}"></td>
                         <td th:text="${student.firstName}">User first name</td>
                         <td th:text="${student.lastName}">User first name</td>
                         <td th:text="${student.email}">User first name</td>
-                        <td width="5%"><img width="100%" th:src="${student.profilePicturePath}"></td>
+                        <td>
+                            <form th:action="@{'/course/details/' + ${idCourse} + '/sendFriendRequest/' + ${student.id}}" th:if="${isStudentAFriend.get(student.id.toString()) == false}" method="POST">
+                                <button class="btn btn-primary" th:text="#{user.friendRequest}"></button>
+                            </form>
 
+                            <span th:if="${isStudentAFriend.get(student.id.toString()) == true}" th:text="#{user.alreadyFriends}"></span>
+
+                            <span th:if="${isStudentAFriend.get(student.id.toString()) == null}" th:text="#{user.friend.pending}"></span>
+
+                        </td>
                     </tr>
 
                 </table>
