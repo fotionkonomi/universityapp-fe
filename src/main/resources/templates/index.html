@@ -9,6 +9,41 @@
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             <nav th:replace="/fragments/common/topbar.html :: topbar"></nav>
+            <center>
+                <h2 th:text="#{post.add}">Add Post</h2>
+            </center>
+                <div>
+                    <form method="POST" th:object="${content}"
+                          class="form-style">
+                        <div th:replace="/fragments/inputs/text.html :: text('post.add', 'Content', 'content')"></div>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary" th:text="#{global.submit}">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            <table id="posts" border="1" style="width: 99%;">
+                <tr>
+                    <th th:text="#{post.postedBy.profilePicture}">Profile Picture</th>
+                    <th th:text="#{post.postedBy.fullName}">Full Name</th>
+                    <th th:text="#{post.postedAt}">Posted At</th>
+                    <th th:text="#{post.content}">Post</th>
+                    <th th:text="#{global.details}">Details</th>
+                </tr>
+                <tr th:each="post : ${postsToShowLoggedUser}" th:value="${post}" >
+                    <td width="5%"><img width="100%" th:src="${post.postedBy.profilePicturePath}"></td>
+                    <td th:text="${post.postedBy.firstName} + ' ' + ${post.postedBy.lastName}">Full Name</td>
+                    <td th:text="${post.createdAt}">Posted At</td>
+                    <td th:text="${post.content}">Content</td>
+                    <td><a th:href="@{'/post/' + ${post.id}}" style="color: white;" class="btn btn-secondary" th:text="#{global.details}">Details</a></td>
+                </tr>
+
+            </table>
+            <a th:if="${previousPage}" th:href="@{'/' + ${previousPage}}" th:text="#{page.previous}"></a>
+            <a style="float: right; margin-right: 1%;" th:if="${nextPage}" th:href="@{'/' + ${nextPage}}" th:text="#{page.next}"></a>
+
+
         </div>
     </div>
 </div>

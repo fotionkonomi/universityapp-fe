@@ -50,6 +50,9 @@ public class Endpoint {
     @Value("${endpoint.comment.alreadyLiked}")
     private String findIfACommentIsAlreadyLiked;
 
+    @Value("${endpoint.content.alreadyLiked}")
+    private String findIfAContentIsAlreadyLiked;
+
     @Value("${endpoint.friendship.exists}")
     private String doesFriendshipExist;
 
@@ -70,4 +73,10 @@ public class Endpoint {
 
     @Value("${endpoint.friendship.friendRequests.loggedUser}")
     private String friendRequestsOfLoggedUser;
+
+    @Value("${endpoint.post}")
+    private String post;
+
+    @Value("${endpoint.posts.showToLoggedUser}")
+    private String postsToShowLoggedUser;
 }

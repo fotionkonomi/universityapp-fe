@@ -24,7 +24,7 @@
                 <tr th:each="course : ${coursesAvailable}" th:value="${course}" >
                     <td th:text="${course.name}"><a th:href="@{'/course/' + ${course.id}}"></a></td>
                     <td th:text="${course.description}">Course Description</td>
-                    <td th:text="${course.hall.name}">Course Hall</td>
+                    <td th:text="${course.hall.id}">Course Hall</td>
                     <td th:text="${course.startDateTime}">Course start date and time</td>
                     <td th:text="${course.repeatCount}">Course number of lectures</td>
                     <td th:text="${course.repeatType.name()}">Course frequency</td>

@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/common/head.html :: headerfiles">
+</head>
+<body>
+
+<div id="wrapper">
+    <ul th:replace="/fragments/common/sidebar.html :: sidebar"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragments/common/topbar.html :: topbar"></nav>
+
+            <center>
+                <h2 th:text="#{post.general.info}"></h2>
+                <div>
+                    <p><span th:text="#{post.postedBy}"></span>:&nbsp;<span th:text="${post.postedBy.firstName} + ' ' + ${post.postedBy.lastName}"></span></p>
+                    <p><span th:text="#{post.postedAt}"></span>:&nbsp;<span th:text="${post.createdAt}"></span></p>
+                    <p><span th:text="#{post.content}"></span>:&nbsp;<span th:text="${post.content}"></span></p>
+                </div>
+
+                <hr>
+                <div>
+                    <p th:text="${likes.size()} + ' ' + #{global.comment.likes}"></p>
+                    <form th:if="${isContentAlreadyLiked}" th:action="@{'/post/' + ${idPost} + '/unlike'}" method="POST">
+                        <button type="submit" name="submit" style="color: white;" class="btn btn-secondary" th:text="#{global.unlike}">Unlike</button>
+                    </form>
+                    <form th:if="${!isContentAlreadyLiked}" th:action="@{'/post/' + ${idPost} + '/like'}" method="POST">
+                        <button type="submit" name="submit" style="color: white;" class="btn btn-secondary" th:text="#{global.like}">Like</button>
+                    </form>
+                    <h2 th:text="#{global.comments}">Comments</h2>
+                    <div>
+                        <form method="POST" th:object="${commentToAdd}"
+                              class="form-style">
+                            <div th:replace="/fragments/inputs/text.html :: text('comment.writeComment', 'CommentToAdd', 'content')"></div>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary" th:text="#{global.submit}">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <table id="commentsOfACourse" border="1" style="width: 70%;">
+                        <tr>
+                            <th th:text="#{user.profilePicture}">User profile picture</th>
+                            <th th:text="#{user.fullName}">User full name</th>
+                            <th th:text="#{global.comment}">Comment</th>
+                            <th th:text="#{global.comment.commentedOn}">Commented on</th>
+                            <th th:text="#{global.comment.likes}">Likes</th>
+                            <th th:text="#{global.like}">Likes</th>
+
+                        </tr>
+                        <tr th:each="comment : ${comments}" th:value="${comment}" >
+                            <td width="5%"><img width="100%" th:src="${comment.interactedBy.profilePicturePath}"></td>
+                            <td th:text="${comment.interactedBy.firstName} + ' ' + ${comment.interactedBy.lastName}">User full name</td>
+                            <td th:text="${comment.content}">Content</td>
+                            <td th:text="${comment.updatedAt}">Updated at</td>
+                            <td th:text="${numberOfLikesInComments.get(comment.id.toString())} + ' ' + #{global.comment.likes}">
+                            </td>
+                            <td>
+                                <form th:if="${areLikedComments.get(comment.id.toString())}" th:action="@{'/post/' + ${idPost} + '/comment/' + ${comment.id} + '/unlike'}" method="POST">
+                                    <button type="submit" name="submit" style="color: white;" class="btn btn-secondary" th:text="#{global.unlike}">Unlike</button>
+                                </form>
+                                <form th:if="${!areLikedComments.get(comment.id.toString())}" th:action="@{'/post/' + ${idPost} + '/comment/' + ${comment.id} + '/like'}" method="POST">
+                                    <button type="submit" name="submit" style="color: white;" class="btn btn-secondary" th:text="#{global.like}">Like</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+
+            </center>
+
+
+        </div>
+    </div>
+</div>
+
+<div th:insert="/fragments/common/footer.html :: footer"></div>
+
+<div th:insert="/fragments/common/scripts.html :: scripts"></div>
+
+</body>
+
+
+
+</html>

@@ -22,4 +22,19 @@ public class LikeServiceImpl extends BaseServiceImpl<Like, Long> implements Like
     public ResponseEntity<Like[]> getLikesOfAComment(Long idComment) {
         return restCaller.getExchange(endpoint.getLikeAComment() + "/" + idComment, Like[].class);
     }
+
+    @Override
+    public ResponseEntity<Like[]> getLikesOfAContent(Long idContent) {
+        return restCaller.getExchange(endpoint.getLikeAContent() + "/" + idContent, Like[].class);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> findIfContentIsAlreadyLiked(Long idContent) {
+        return restCaller.getExchange(endpoint.getFindIfAContentIsAlreadyLiked() + "/" + idContent, Boolean.class);
+    }
+
+    @Override
+    public ResponseEntity<Void> toggleLikeAContent(Long idContent) {
+        return restCaller.postExchange(endpoint.getLikeAContent(), new HttpEntity<>(idContent), Void.class);
+    }
 }
