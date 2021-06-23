@@ -5,6 +5,7 @@ import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.Con
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.Friendship;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.User;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.commentableAndLikeable.Course;
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.commentableAndLikeable.Announcment;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.userInteractions.Comment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class CourseController {
     @Autowired
     private FriendshipService friendshipService;
 
+    @Autowired
+    private CourseAnnouncmentService courseAnnouncmentService;
+
     @ModelAttribute("course")
     public Course course(@PathVariable("idCourse") Long idCourse) {
         ResponseEntity<Course> courseResponseEntity = service.findById(idCourse);
@@ -63,6 +67,12 @@ public class CourseController {
     @ModelAttribute("commentToAdd")
     public ContentWrapper commentToAdd() {
         return new ContentWrapper();
+    }
+
+    @ModelAttribute("courseAnnouncements")
+    public List<Announcment> courseAnnouncments(@PathVariable("idCourse") Long idCourse) {
+        ResponseEntity<Announcment[]> courseAnnouncementsResponse = courseAnnouncmentService.getCourseAnnouncmentsOfACourse(idCourse);
+        return Arrays.asList(courseAnnouncementsResponse.getBody());
     }
 
     @GetMapping("/{idCourse}")

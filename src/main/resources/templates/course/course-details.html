@@ -37,6 +37,24 @@
             <a th:text="#{course.hall.direction}" th:href="'https://www.google.com/maps?saddr=My+Location&daddr=' + ${course.hall.latitude} + ',' + ${course.hall.longitude}"></a>
 
                 <hr>
+                <div>
+                    <h2 th:text="#{course.courseAnnouncements}">Course Announcements</h2>
+                    <table id="courseAnnouncements" border="1" style="width: 99%;">
+                        <tr>
+                            <th th:text="#{courseAnnouncement.postedAt}">Posted At</th>
+                            <th th:text="#{courseAnnouncement.content}">Content</th>
+                            <th  th:text="#{global.details}">Details</th>
+                        </tr>
+                        <tr th:each="announcement : ${courseAnnouncements}" th:value="${announcement}" >
+                            <td th:text="${announcement.createdAt}">Posted at</td>
+                            <td th:text="${announcement.content}">Content</td>
+                            <td><a th:href="@{'/announcement/' + ${announcement.id}}" style="color: white;" class="btn btn-secondary" th:text="#{global.details}">Details</a></td>
+                        </tr>
+
+                    </table>
+                </div>
+
+                <hr>
             <div>
                 <h2 th:text="#{course.students.enrolled}">Enrolled Students</h2>
                 <table id="studentsEnrolled" border="1" style="width: 70%;">

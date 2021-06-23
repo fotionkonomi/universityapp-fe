@@ -16,4 +16,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     public ResponseEntity<User[]> getUsersEnrolledInACourse(Long idCourse) {
         return restCaller.getExchange(endpoint.getStudentsOfACourse() + "/" + idCourse, User[].class);
     }
+
+    @Override
+    public ResponseEntity<User[]> friendsOfLoggedUser(int pageNumber) {
+        return restCaller.getExchange(endpoint.getFriendsOfLoggedUser() + "/" + pageNumber, User[].class);
+    }
 }

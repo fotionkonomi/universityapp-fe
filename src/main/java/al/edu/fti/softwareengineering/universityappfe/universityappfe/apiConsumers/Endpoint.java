@@ -79,4 +79,10 @@ public class Endpoint {
 
     @Value("${endpoint.posts.showToLoggedUser}")
     private String postsToShowLoggedUser;
+
+    @Value("${endpoint.course.announcements}")
+    private String announcementsForACourse;
+
+    @Value("${endpoint.user.friends}")
+    private String friendsOfLoggedUser;
 }
