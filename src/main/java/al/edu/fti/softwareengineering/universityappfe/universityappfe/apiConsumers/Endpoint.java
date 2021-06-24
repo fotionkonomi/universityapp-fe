@@ -85,4 +85,7 @@ public class Endpoint {
 
     @Value("${endpoint.user.friends}")
     private String friendsOfLoggedUser;
+
+    @Value("${endpoint.user.profile}")
+    private String loggedUserProfile;
 }

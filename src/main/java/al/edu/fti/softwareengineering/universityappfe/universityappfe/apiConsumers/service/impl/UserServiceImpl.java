@@ -21,4 +21,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     public ResponseEntity<User[]> friendsOfLoggedUser(int pageNumber) {
         return restCaller.getExchange(endpoint.getFriendsOfLoggedUser() + "/" + pageNumber, User[].class);
     }
+
+    @Override
+    public ResponseEntity<User> loggedUser() {
+        return restCaller.getExchange(endpoint.getLoggedUserProfile(), User.class);
+    }
 }

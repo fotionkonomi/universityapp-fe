@@ -2,21 +2,24 @@ package al.edu.fti.softwareengineering.universityappfe.universityappfe.controlle
 
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.CourseService;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.apiConsumers.service.UserService;
+import al.edu.fti.softwareengineering.universityappfe.universityappfe.controller.util.AuthenticationFacade;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.User;
 import al.edu.fti.softwareengineering.universityappfe.universityappfe.models.commentableAndLikeable.Course;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -24,6 +27,9 @@ public class UserController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private AuthenticationFacade authenticationFacade;
 
     @GetMapping("/friends/{pageNumber}")
     public String friends(@PathVariable("pageNumber") int pageNumber, Model model) {
@@ -55,5 +61,31 @@ public class UserController {
         }
         return "user/user-details";
     }
+
+    @GetMapping("/profile")
+    public String editProfile(Model model) {
+        ResponseEntity<User> loggedUserResponseEntity = this.service.loggedUser();
+        User loggedUser = authenticationFacade.getAuthenticatedUser();
+        model.addAttribute("user", loggedUser);
+
+        return "signup";
+    }
+
+    @PostMapping("/profile")
+    public String editUser(@ModelAttribute("user") @Valid User user, Errors errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().forEach(error -> log.error(error.getArguments() + error.getDefaultMessage()));
+            return "signup";
+        }
+        User loggedUser = authenticationFacade.getAuthenticatedUser();
+        user.setId(loggedUser.getId());
+        user.setCreatedAt(loggedUser.getCreatedAt());
+        user.setUpdatedAt(loggedUser.getUpdatedAt());
+        this.service.save(user);
+
+        return "redirect:/logout";
+    }
+
+
 
 }

@@ -20,7 +20,7 @@ public class SignupController {
     @Autowired
     private SignupService signupService;
 
-    @ModelAttribute("newUser")
+    @ModelAttribute("user")
     public User newUser() {
         return new User();
     }
@@ -31,14 +31,14 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-    public String signup(@ModelAttribute("newUser") @Valid User user, Errors errors) {
+    public String signup(@ModelAttribute("user") @Valid User user, Errors errors) {
         if (errors.hasErrors()) {
             errors.getAllErrors().forEach(error -> log.error(error.getArguments() + error.getDefaultMessage()));
             return "signup";
         }
         this.signupService.signup(user);
 
-        return "redirect:/";
+        return "redirect:/1";
     }
 
 

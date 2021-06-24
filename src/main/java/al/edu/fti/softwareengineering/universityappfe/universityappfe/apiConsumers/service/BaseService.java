@@ -8,7 +8,7 @@ import java.util.List;
 public interface BaseService<MODEL extends BaseModel, ID> {
     ResponseEntity<MODEL> findById(ID id);
 
-    ResponseEntity<Void> add(MODEL model);
+    ResponseEntity<Void> save(MODEL model);
 
     ResponseEntity<MODEL[]> findAllPageable(int pageNumber);
 }

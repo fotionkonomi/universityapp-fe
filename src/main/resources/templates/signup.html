@@ -30,7 +30,7 @@
             <div class="card-heading"></div>
             <div class="card-body">
                 <h2 class="title" th:text="#{signup.title}">Registration Info</h2>
-                <form method="POST" th:object="${newUser}">
+                <form method="POST" th:object="${user}">
                     <div class="row row-space">
                         <div class="input-group col-2">
                             <input class="input--style-1" th:field="*{firstName}" type="text" th:placeholder="#{signup.firstName}">

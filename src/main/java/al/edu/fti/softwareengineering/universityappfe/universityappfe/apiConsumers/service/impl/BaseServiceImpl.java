@@ -30,7 +30,7 @@ public abstract class BaseServiceImpl<MODEL extends BaseModel, ID> implements Ba
     }
 
     @Override
-    public ResponseEntity<Void> add(MODEL model) {
+    public ResponseEntity<Void> save(MODEL model) {
         return restCaller.postExchange("/" + classOfModel.getSimpleName().toLowerCase(), new HttpEntity<>(model), Void.class);
     }
 
